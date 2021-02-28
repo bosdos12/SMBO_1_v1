@@ -158,3 +158,4 @@ class app:
 # Home, settings, paint, radio will always exist in screens
 runApp = app("Adak",14, 5, ["Home", "Settings", "Paint", "Radio", "EatFruits"])
 runApp.startOs()
+ 
