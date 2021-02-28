@@ -85,52 +85,74 @@ class app:
 		display.clear()
 		curCursLoc = [4,4]
 
+		# setting the homegrid array and the screen via a basic algorithm
+		atc=0
+		for x in range(len(homeGrid)):
+			print(atc)
+			if x % 2 == 0:
+				for y in range(len(homeGrid)):
+					if y % 2 == 0:
+						if atc < len(self.apps):
+							homeGrid[x][y] = self.apps[atc]
+							display.set_pixel(x, y, 5)
+							atc+=1
+						else:
+							homeGrid[x][y] = 0
+						
+			else:
+				for y2 in range(len(homeGrid)):
+					if y2 % 2 != 0:
+						if atc < len(self.apps):
+							homeGrid[x][y2] = self.apps[atc]
+							display.set_pixel(x, y2, 5)
+							atc+=1
+						else:
+							homeGrid[x][y2] = 0
+
 		# starting the actual app full proccess
 		while not(accelerometer.was_gesture("shake")):
-			# setting the homegrid array and the screen via a basic algorithm
-			atc=0
-			for x in range(len(homeGrid)):
-				print(atc)
-				if x % 2 == 0:
-					for y in range(len(homeGrid)):
-						if y % 2 == 0:
-							if atc < len(self.apps):
-								homeGrid[x][y] = self.apps[atc]
-								display.set_pixel(x, y, 5)
-								atc+=1
-							else:
-								homeGrid[x][y] = 0
-							
-				else:
-					for y2 in range(len(homeGrid)):
-						if y2 % 2 != 0:
-							if atc < len(self.apps):
-								homeGrid[x][y2] = self.apps[atc]
-								display.set_pixel(x, y2, 5)
-								atc+=1
-							else:
-								homeGrid[x][y2] = 0
 			# rendering the current user
 			display.set_pixel(curCursLoc[0], curCursLoc[1], 9)
-			# checking for inputs
+			''' checking for input '''
+
+			def changeCursorLoc(orientation):
+				# setting the orientation number basedd of the type of movement the user wants
+				# as our movements are 2d, 0 will move the cursor horizontally, 1 will move it vertically via array changes
+				# this approach also cuts back a lot of lines of unneeded code
+				orientationNum = 0
+				if orientation == "y":
+					orientationNum = 1
+					
+				# checking if the grid location contains a pointer to an application
+				if homeGrid[curCursLoc[0]][curCursLoc[1]] != 0:
+					display.set_pixel(curCursLoc[0],curCursLoc[1], 5)
+				else:
+					display.set_pixel(curCursLoc[0],curCursLoc[1], 0)
+
+				# doing some orientation specific calculations
+				if orientation == "x":
+					if curCursLoc[orientationNum] < 4:
+						curCursLoc[orientationNum]+=1
+					else:
+						curCursLoc[orientationNum]=0
+				else:
+					if curCursLoc[orientationNum] > 0:
+						curCursLoc[orientationNum]-=1
+					else:
+						curCursLoc[orientationNum]=4
+
+				
+			# if button a is pressed, moving the cursor horizontally
 			if button_a.is_pressed():
 				tsleep(0.3)
-				if curCursLoc[0] < 4:
-					curCursLoc[0] += 1
-				else:
-					curCursLoc[0] = 0
+				changeCursorLoc("x")
+			# if button b is pressed, moving the cursor vertically
+			if button_b.is_pressed():
+				tsleep(0.3)
+				changeCursorLoc("y")
+				
 
-
-		def rrScreenPHP(clearLoc):
-			if clearLoc[0] < 4:
-				clearLoc+=1
-			else:
-				if homeGrid[clearLoc[0]][clearLoc[1]] != 0:
-					pass # write a good function here 
-
-
-
-		# moving 
+	
 
 
 # Home, settings, paint, radio will always exist in screens
