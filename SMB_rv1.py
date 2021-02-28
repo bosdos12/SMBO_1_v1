@@ -11,7 +11,7 @@ screens: {
 """
 from microbit import *
 from time import sleep as tsleep
-
+from pathlib import Path
 
 class app:
 	def __init__(self, _usn, _age, _sc, _Apps):
@@ -48,8 +48,21 @@ class app:
 
 	def openApp(self, _ato):
 		# checking which app they meant to open
-		if _ato == "Home":
-			self.Home()
+		# checking if the app is a system app (written in python) or is a .smboRun file which i will interpret to code via my .smboRun interpreter
+		if Path(_ato).suffix == ".smboRun":
+			self.smboRunINT(_ato)
+		else:
+			# running system apps
+			if _ato == "Home":
+				self.Home()
+			elif _ato == "Settings":
+				self.Settings()
+			elif _ato == "Paint":
+				self.Paint()
+			elif _ato == "Radio":
+				self.Radio()
+			elif _ato == "EatFruits":
+				self.EatFruits()
 
 
 	def changeScreen(self, _dir):
@@ -73,12 +86,38 @@ class app:
 		#display.scroll("SMB 1")
 		#display.scroll("Hello " + self.cuUsername)
 
+	
+	
+	# the app for running the application system wise
+	def runApp(self, appToRun):
+		# checking if the app is a system app (written in python) or is a .smboRun file which i will interpret to code via my .smboRun interpreter
+		if Path(appToRun).suffix == ".smboRun":
+			self.smboRunINT(appToRun)
+		else:
+			pass
 
+
+
+
+	def smboRunINT(self, intFile):
+		pass # write an interpreter tmrw morning
+
+
+
+
+
+
+
+	'''
+	/=============================|
+	|| System Applications Below ||
+	|=============================/
+	'''
 	def Home(self):
 		homeGrid = [
-					[1,0,1,0,1],
 					[0,0,0,0,0],
-					[1,0,1,0,1],
+					[0,0,0,0,0],
+					[0,0,0,0,0],
 					[0,0,0,0,0],
 					[0,0,0,0,0]
 				]
@@ -110,7 +149,7 @@ class app:
 							homeGrid[x][y2] = 0
 
 		# starting the actual app full proccess
-		while not(accelerometer.was_gesture("shake")):
+		while not(accelerometer.was_gesture("face down")):
 			# rendering the current user
 			display.set_pixel(curCursLoc[0], curCursLoc[1], 9)
 			''' checking for input '''
@@ -150,6 +189,13 @@ class app:
 			if button_b.is_pressed():
 				tsleep(0.3)
 				changeCursorLoc("y")
+
+
+			# if button a+b is pressed at the same time, opening the app pointed to the grid they are currently on
+			if accelerometer.was_gesture("shake"):
+				self.runApp(homeGrid[curCursLoc[0]][curCursLoc[1]])
+			
+
 				
 
 	
@@ -158,4 +204,3 @@ class app:
 # Home, settings, paint, radio will always exist in screens
 runApp = app("Adak",14, 5, ["Home", "Settings", "Paint", "Radio", "EatFruits"])
 runApp.startOs()
- 
